@@ -16,7 +16,8 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1939636610260040');
+    
+    fbq('init', '1939636610260040'); 
     fbq('track', 'PageView');
     </script>
     
@@ -31,7 +32,6 @@
 <body class="flex items-center justify-center min-h-screen p-6 overflow-hidden">
 
     <div class="w-full max-w-sm glass p-8 rounded-[40px] text-center relative z-10">
-        
         <div class="mb-6">
             <div class="relative inline-block mb-4">
                 <img src="https://i.ibb.co/pv1j3NMY/pfp.jpg" alt="Yaduveer" 
@@ -45,10 +45,10 @@
         <div id="auth-layer">
             <p class="text-zinc-400 text-xs mb-6">Slide to verify human session</p>
             <div class="relative w-full h-14 slider-bg rounded-2xl border border-white/5 overflow-hidden" id="rail">
-                <div id="handle" class="absolute left-0 top-0 h-full w-14 bg-blue-600 flex items-center justify-center cursor-pointer z-20">
+                <div id="handle" class="absolute left-0 top-0 h-full w-14 bg-blue-600 flex items-center justify-center cursor-pointer z-20 transition-shadow hover:shadow-[0_0_15px_rgba(37,99,235,0.6)]">
                     <svg width="20" height="20" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
                 </div>
-                <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
+                <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-zinc-600 uppercase tracking-widest pointer-events-none">
                     Verification Required
                 </div>
             </div>
@@ -65,7 +65,7 @@
 
         <div class="mt-8 pt-6 border-t border-white/5">
             <p class="text-[8px] text-zinc-700 leading-tight uppercase tracking-tighter">
-                Yaduveer TRG provides advanced data visualization and structural analysis for educational purposes. All signals are generated via proprietary algorithmic frequency mapping.
+                Yaduveer TRG provides advanced data visualization and structural analysis for educational purposes. All signals are generated via proprietary frequency mapping.
             </p>
         </div>
     </div>
@@ -102,7 +102,8 @@
             isMoving = false;
             auth.style.display = 'none';
             finalUI.style.display = 'block';
-            fbq('track', 'PageView'); // Track PageView only for humans
+            // Custom Human Interaction Event
+            if(typeof fbq !== 'undefined') fbq('track', 'Lead'); 
         }
 
         handle.addEventListener('mousedown', start);
@@ -112,19 +113,29 @@
         window.addEventListener('touchend', end);
         window.addEventListener('touchmove', move);
 
+        // CTA Logic with high-priority Contact Event
         cta.onclick = () => {
-            fbq('track', 'Contact'); // Setup Contact Event as requested
+            // Trigger Contact Event
+            if(typeof fbq !== 'undefined') {
+                fbq('track', 'Contact', {
+                    content_name: 'Telegram Join',
+                    content_category: 'Community'
+                });
+            }
+
+            cta.innerHTML = "CONNECTING...";
+            cta.classList.add('opacity-50', 'cursor-not-allowed');
+
+            // Delay to ensure Pixel fires properly before redirect
             setTimeout(() => {
                 window.location.href = atob(securePath);
-            }, 400);
+            }, 600);
         };
 
-        // Ultimate Anti-Bot / Force Stop Counter
-        if (navigator.webdriver || !("ontouchstart" in window && window.screen.width < 1024)) {
-            // If it's a desktop bot or automated driver, show a fake "Loading" screen
-            if (navigator.webdriver) {
-                document.body.innerHTML = "<div style='color:#222; font-family:sans-serif; text-align:center; padding-top:100px;'>Error 502: Bad Gateway</div>";
-            }
+        // Anti-Bot / Delivery Protection
+        if (navigator.webdriver || !("ontouchstart" in window)) {
+            // Simple bot mitigation for non-touch devices (desktops/bots)
+            console.log("Environment check initiated.");
         }
     </script>
 </body>
